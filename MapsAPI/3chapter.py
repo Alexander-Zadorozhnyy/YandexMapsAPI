@@ -27,32 +27,32 @@ def main():
                 looping = False
             key = pygame.key.get_pressed()
             step = 0.006
-            if key[pygame.K_UP]:
+            if key[pygame.K_PAGEUP]:
                 zoom = zoom + 1 if zoom + 1 < 20 else zoom
                 ll_spn = f"ll={x},{y}&z={zoom}"
                 print(ll_spn)
                 show_map_yandex(ll_spn, "map")
-            if key[pygame.K_DOWN]:
+            if key[pygame.K_PAGEDOWN]:
                 zoom = zoom - 1 if zoom - 1 > 0 else zoom
                 ll_spn = f"ll={x},{y}&z={zoom}"
                 print(ll_spn)
                 show_map_yandex(ll_spn, "map")
-            if key[pygame.K_w]:
+            if key[pygame.K_UP]:
                 y += step * math.pow(2, 15 - zoom)
                 ll_spn = f"ll={x},{y}&z={zoom}"
                 print(ll_spn)
                 show_map_yandex(ll_spn, "map")
-            if key[pygame.K_s]:
+            if key[pygame.K_DOWN]:
                 y -= step * math.pow(2, 15 - zoom)
                 ll_spn = f"ll={x},{y}&z={zoom}"
                 print(ll_spn)
                 show_map_yandex(ll_spn, "map")
-            if key[pygame.K_d]:
+            if key[pygame.K_RIGHT]:
                 x += step * math.pow(2, 15 - zoom)
                 ll_spn = f"ll={x},{y}&z={zoom}"
                 print(ll_spn)
                 show_map_yandex(ll_spn, "map")
-            if key[pygame.K_a]:
+            if key[pygame.K_LEFT]:
                 x -= step * math.pow(2, 15 - zoom)
                 ll_spn = f"ll={x},{y}&z={zoom}"
                 print(ll_spn)
