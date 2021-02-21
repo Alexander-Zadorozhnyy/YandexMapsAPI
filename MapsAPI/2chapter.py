@@ -25,12 +25,12 @@ def main():
             if event.type == pygame.QUIT:
                 looping = False
             key = pygame.key.get_pressed()
-            if key[pygame.K_UP]:
+            if key[pygame.K_PAGEUP]:
                 zoom = zoom + 1 if zoom + 1 < 20 else zoom
                 ll_spn = f"ll={x},{y}&z={zoom}"
                 print(ll_spn)
                 show_map_yandex(ll_spn, "map")
-            if key[pygame.K_DOWN]:
+            if key[pygame.K_PAGEDOWN]:
                 zoom = zoom - 1 if zoom - 1 > 0 else zoom
                 ll_spn = f"ll={x},{y}&z={zoom}"
                 print(ll_spn)
