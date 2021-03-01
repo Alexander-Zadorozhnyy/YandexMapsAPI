@@ -17,6 +17,7 @@ def geocode(address):
     if response:
         # Преобразуем ответ в json-объект
         json_response = response.json()
+        print(json_response)
     else:
         raise RuntimeError(
             f"""Ошибка выполнения запроса:
@@ -86,3 +87,8 @@ def get_nearest_object(point, kind):
     # Получаем первый топоним из ответа геокодера.
     features = json_response["response"]["GeoObjectCollection"]["featureMember"]
     return features[0]["GeoObject"]["name"] if features else None
+
+
+def get_address(address):
+    info = geocode(address)
+    return info['metaDataProperty']['GeocoderMetaData']['Address']['formatted'] if info else None
