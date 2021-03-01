@@ -96,6 +96,7 @@ def get_address(address):
 
 def get_postal_code(text):
     import requests
+    text = ', '.join([i for i in text.split(', ') if 'район' not in i])
     json_data = {"query": text, "limit": 5, "fromBound": "CITY"}
     resp = requests.post('https://www.pochta.ru/suggestions/v2/suggestion.find-addresses', json=json_data)
     resp.json()
@@ -103,3 +104,5 @@ def get_postal_code(text):
         return resp.json()[0]['postalCode']
     except KeyError:
         return 'Указан неточный адрес'
+    except IndexError:
+        return 'Невозможно показать данный индекс'
