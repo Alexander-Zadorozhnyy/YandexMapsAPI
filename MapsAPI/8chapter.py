@@ -1,5 +1,5 @@
 from Samples.show_map import show_map_yandex
-from Samples.geocoder import get_coordinates, get_ll_span
+from Samples.geocoder import get_coordinates, get_ll_span, get_address
 from Samples.try_to_geocode import try_to
 import argparse
 import pygame
@@ -12,9 +12,14 @@ parser.add_argument('coord_y', type=float)
 parser.add_argument('--zoom', type=float, default=5)
 parser.add_argument('--type_map', type=str, default='map')
 res = parser.parse_args()
+flag = False
+pygame.init()
+screen = pygame.display.set_mode((600, 450))
+info_box = pygame.Rect(5, 70, 100, 200)
 
 
 def main():
+    global flag
     pygame.font.init()
     font = pygame.font.Font(None, 32)
     fond_for_err = pygame.font.Font(None, 16)
@@ -33,10 +38,9 @@ def main():
     show_map_yandex(ll_spn, "map")
     map_file = "map.png"
     types = ['map', 'sat', 'sat,skl']
+    info = ''
     point_param = ''
     # Инициализируем pygame
-    pygame.init()
-    screen = pygame.display.set_mode((600, 450))
     looping = True
     count = types.index(type_map)
     while looping:
@@ -51,6 +55,7 @@ def main():
                     active = False
                 if clear_buton.collidepoint(event.pos):
                     point_param = ''
+                    flag = False
                     show_map_yandex(ll_spn, "map")
                 # Change the current color of the input box.
                 color = color_active if active else color_inactive
@@ -69,6 +74,8 @@ def main():
                             print(point_param)
                             show_map_yandex(ll_spn, "map", add_params=point_param)
                             end_text = fond_for_err.render('', True, (255, 0, 0))
+                            info = get_address(text)
+                            flag = True
                         else:
                             end_text = fond_for_err.render('Введите корректное имя поиска', True, (255, 0, 0))
                         text = ''
@@ -80,38 +87,31 @@ def main():
             if key[pygame.K_PAGEUP]:
                 zoom = zoom + 1 if zoom + 1 < 20 else zoom
                 ll_spn = f"ll={x},{y}&z={zoom}&l={type_map}"
-                print(ll_spn)
                 show_map_yandex(ll_spn, "map", add_params=point_param)
             if key[pygame.K_PAGEDOWN]:
                 zoom = zoom - 1 if zoom - 1 > 0 else zoom
                 ll_spn = f"ll={x},{y}&z={zoom}&l={type_map}"
-                print(ll_spn)
                 show_map_yandex(ll_spn, "map", add_params=point_param)
             if key[pygame.K_UP]:
                 y += step * math.pow(2, 15 - zoom)
                 ll_spn = f"ll={x},{y}&z={zoom}&l={type_map}"
-                print(ll_spn)
                 show_map_yandex(ll_spn, "map", add_params=point_param)
             if key[pygame.K_DOWN]:
                 y -= step * math.pow(2, 15 - zoom)
                 ll_spn = f"ll={x},{y}&z={zoom}&l={type_map}"
-                print(ll_spn)
                 show_map_yandex(ll_spn, "map", add_params=point_param)
             if key[pygame.K_RIGHT]:
                 x += step * math.pow(2, 15 - zoom)
                 ll_spn = f"ll={x},{y}&z={zoom}&l={type_map}"
-                print(ll_spn)
                 show_map_yandex(ll_spn, "map", add_params=point_param)
             if key[pygame.K_LEFT]:
                 x -= step * math.pow(2, 15 - zoom)
                 ll_spn = f"ll={x},{y}&z={zoom}&l={type_map}"
-                print(ll_spn)
                 show_map_yandex(ll_spn, "map", add_params=point_param)
             if key[pygame.K_HOME]:
                 count = (count + 1) % 3
                 type_map = types[count]
                 ll_spn = f"ll={x},{y}&z={zoom}&l={type_map}"
-                print(ll_spn)
                 show_map_yandex(ll_spn, "map", add_params=point_param)
 
 
@@ -129,12 +129,21 @@ def main():
         pygame.draw.rect(screen, (200, 200, 200), clear_buton)
         screen.blit(pygame.font.Font(None, 16).render('Сбросить метку', True, (0, 0, 0)), (clear_buton.x + 5, clear_buton.y + 5))
         screen.blit(end_text, [350, 430])
+        if flag:
+            write_info(info)
         # Переключаем экран и ждем закрытия окна.
         pygame.display.flip()
         pygame.display.update()
     pygame.quit()
     # Удаляем за собой файл с изображением.
     os.remove(map_file)
+
+
+def write_info(words):
+    if flag:
+        pygame.draw.rect(screen, (250, 250, 250), info_box)
+        screen.blit(pygame.font.Font(None, 16).render(words, True, (0, 0, 0)),
+                    (info_box.x, info_box.y, 100, 200))
 
 
 if __name__ == "__main__":
