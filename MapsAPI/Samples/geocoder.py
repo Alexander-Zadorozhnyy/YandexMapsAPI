@@ -92,3 +92,14 @@ def get_nearest_object(point, kind):
 def get_address(address):
     info = geocode(address)
     return info['metaDataProperty']['GeocoderMetaData']['Address']['formatted'] if info else None
+
+
+def get_postal_code(text):
+    import requests
+    json_data = {"query": text, "limit": 5, "fromBound": "CITY"}
+    resp = requests.post('https://www.pochta.ru/suggestions/v2/suggestion.find-addresses', json=json_data)
+    resp.json()
+    try:
+        return resp.json()[0]['postalCode']
+    except KeyError:
+        return 'Указан неточный адрес'
